@@ -4,31 +4,23 @@ package com.virtual_assistant.meet.domain;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class Member {
-    @EmbeddedId
-    private MemberId id;
-
+    @Id
+    private String id;
+    @MapsId
     @ManyToOne
-    @JoinColumn(name = "idMember", insertable = false, updatable = false)
+    @JoinColumn(name = "idMember")
     private Employee employee;
 
-    @ManyToOne
-    @JoinColumn(name = "idMeeting", insertable = false, updatable = false)
-    private Meeting meeting;
+    @ManyToMany(mappedBy = "members")
+    private List<Meeting> meetings;
 
     @ManyToOne
-    @JoinColumn(name = "idRole", insertable = false, updatable = false)
+    @JoinColumn(name = "idRole")
     private Role role;
-
-    public MemberId getId() {
-        return id;
-    }
-
-    public void setId(MemberId id) {
-        this.id = id;
-    }
 
     public Employee getEmployee() {
         return employee;
@@ -38,12 +30,20 @@ public class Member {
         this.employee = employee;
     }
 
-    public Meeting getMeeting() {
-        return meeting;
+    public String getId() {
+        return id;
     }
 
-    public void setMeeting(Meeting meeting) {
-        this.meeting = meeting;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<Meeting> getMeetings() {
+        return meetings;
+    }
+
+    public void setMeetings(List<Meeting> meetings) {
+        this.meetings = meetings;
     }
 
     public Role getRole() {
@@ -53,6 +53,8 @@ public class Member {
     public void setRole(Role role) {
         this.role = role;
     }
+
+
 }
 
 

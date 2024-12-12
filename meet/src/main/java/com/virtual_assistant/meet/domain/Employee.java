@@ -3,6 +3,8 @@ package com.virtual_assistant.meet.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Employee {
     @Id
@@ -25,7 +27,16 @@ public class Employee {
     @JsonIgnore
     @JoinColumn(name = "department")
     private Department department;
+    @OneToMany(mappedBy = "employee")
+    private List<Member> members;
 
+    public List<Member> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
+    }
 
     public String getId() {
         return id;

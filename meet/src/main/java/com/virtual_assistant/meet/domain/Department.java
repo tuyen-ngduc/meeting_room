@@ -2,6 +2,9 @@ package com.virtual_assistant.meet.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class Department {
@@ -10,6 +13,9 @@ public class Department {
 
     private String name;
     private String description;
+
+    @OneToMany(mappedBy = "department")
+    private List<Employee> employees;
 
     public String getId() {
         return id;

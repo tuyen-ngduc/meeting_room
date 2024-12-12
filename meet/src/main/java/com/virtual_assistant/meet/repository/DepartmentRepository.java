@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, String> {
     @Query("select d.name from Department d")
     List<String> findAllDepartmentNames();
+
+    Optional<Department> findByName(String name);
 
 }

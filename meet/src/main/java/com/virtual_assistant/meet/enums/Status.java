@@ -4,7 +4,8 @@ public enum Status {
     UPCOMING("Sắp tới"),
     ONGOING("Đang diễn ra"),
     COMPLETED("Đã hoàn thành"),
-    CANCELLED("Đã hủy");
+
+    NOT_STARTED("chưa bắt đầu");
 
     private final String description;
 

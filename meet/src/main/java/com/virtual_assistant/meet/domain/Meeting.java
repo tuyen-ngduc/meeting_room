@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 public class Meeting {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String rememberCode;
@@ -29,6 +30,22 @@ public class Meeting {
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents;
+
+    @ManyToMany
+    @JoinTable(name = "meeting_member",
+            joinColumns = @JoinColumn(name = "idMeeting"),
+            inverseJoinColumns = @JoinColumn(name = "idMember")
+
+    )
+    private List<Member> members;
+
+    public List<Member> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
+    }
 
     public long getId() {
         return id;
