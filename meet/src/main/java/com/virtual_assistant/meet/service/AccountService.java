@@ -5,9 +5,12 @@ import com.virtual_assistant.meet.domain.Account;
 import com.virtual_assistant.meet.domain.Employee;
 import com.virtual_assistant.meet.dto.request.Login;
 import com.virtual_assistant.meet.dto.request.Register;
+import com.virtual_assistant.meet.dto.response.EmployeeInfoDTO;
 import com.virtual_assistant.meet.repository.AccountRepository;
 import com.virtual_assistant.meet.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -47,11 +50,11 @@ public class AccountService {
 
     public Optional<String> login(Login request) {
         Optional<Account> accountOpt = accountRepository.findByUsername(request.getUsername());
-        if(!accountOpt.isPresent()) {
+        if (!accountOpt.isPresent()) {
             return Optional.of("Tên tài khoản không tồn tại");
         } else {
             Account account = accountOpt.get();
-            if(account.getPassword().equals(request.getPassword())) {
+            if (account.getPassword().equals(request.getPassword())) {
                 String token = jwtUtil.generateToken(account.getUsername());
                 return Optional.of(token);
             } else {
@@ -60,4 +63,31 @@ public class AccountService {
         }
     }
 
+
+
+    public Optional<EmployeeInfoDTO> getEmployeeInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Optional<Account> account = accountRepository.findByUsername(username);
+
+        return account.map(acc -> {
+            Employee employee = acc.getEmployee();
+
+            EmployeeInfoDTO info = new EmployeeInfoDTO();
+            info.setName(employee.getName());
+            info.setDob(employee.getDob());
+            info.setPhoneNumber(employee.getPhoneNumber());
+            info.setAddress(employee.getAddress());
+            info.setDegree(employee.getDegree());
+            info.setWorkplace(employee.getWorkplace());
+            info.setDepartment(employee.getDepartment().getName());
+            info.setPosition(employee.getPosition().getName());
+
+            return info;
+        });
+    }
+
+
 }
+

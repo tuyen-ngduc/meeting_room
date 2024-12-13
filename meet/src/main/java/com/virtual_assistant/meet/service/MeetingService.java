@@ -133,14 +133,13 @@ public class MeetingService {
 
 
     public List<MeetingDTO> getMeetingsByUser() {
-        // Lấy thông tin người dùng từ token
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Lấy tên người dùng từ token
+        String username = authentication.getName();
 
         // Tìm tài khoản từ username và lấy Employee tương ứng
         Optional<Account> account = accountRepository.findByUsername(username);
-        Employee currentEmployee = account.get().getEmployee(); // Lấy Employee liên kết với tài khoản
-
+        Employee currentEmployee = account.get().getEmployee();
         // Kiểm tra vị trí của nhân viên, nếu là "Thư ký", lấy tất cả cuộc họp
         boolean isSecretary = currentEmployee.getPosition().getName().equals("Thư ký");
 
@@ -160,14 +159,14 @@ public class MeetingService {
             dto.setName(meeting.getName());
             dto.setStartTime(meeting.getStartTime());
             dto.setExpectedEndTime(meeting.getExpectedEndTime());
-            dto.setDepartment(meeting.getDepartment().getName());  // Lấy tên phòng ban
+            dto.setDepartment(meeting.getDepartment().getName());
             dto.setRoom(meeting.getRoom().getName());  // Lấy tên phòng họp
-            dto.setStatus(meeting.getStatus().getDescription());  // Lấy trạng thái cuộc họp
-            dto.setRememberCode(meeting.getRememberCode());  // Mã gọi nhớ
+            dto.setStatus(meeting.getStatus().getDescription());
+            dto.setRememberCode(meeting.getRememberCode());
             if (meeting.getDocuments() != null && !meeting.getDocuments().isEmpty()) {
-                // Lấy đường dẫn của tài liệu đầu tiên
-                Document document = meeting.getDocuments().get(0); // Hoặc bạn có thể xử lý theo cách khác nếu có nhiều tài liệu
-                dto.setPath(document.getPath());  // Chỉ lấy đường dẫn tài liệu
+
+                Document document = meeting.getDocuments().get(0);
+                dto.setPath(document.getPath());
             }
             return dto;
         }).collect(Collectors.toList());

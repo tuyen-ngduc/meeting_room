@@ -48,7 +48,6 @@ public class MemberService {
             Member existingMember = memberRepository.findByEmployeeId(employee.getId());
 
             if (existingMember == null) {
-                // Nếu chưa tồn tại, tạo Member mới
                 existingMember = new Member();
                 existingMember.setEmployee(employee);
                 existingMember.setRole(role);

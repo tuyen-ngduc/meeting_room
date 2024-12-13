@@ -2,9 +2,9 @@ package com.virtual_assistant.meet.controller;
 
 import com.virtual_assistant.meet.dto.request.Login;
 import com.virtual_assistant.meet.dto.request.Register;
+import com.virtual_assistant.meet.dto.response.EmployeeInfoDTO;
 import com.virtual_assistant.meet.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +25,14 @@ public class AccountController {
             return ResponseEntity.ok("Đăng ký tài khoản thành công!");
         }
     }
+
+    @GetMapping("/info")
+    public ResponseEntity<EmployeeInfoDTO> getEmployeeInfo() {
+        Optional<EmployeeInfoDTO> info = accountService.getEmployeeInfo();
+        return info.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Login request) {
