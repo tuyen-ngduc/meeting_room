@@ -4,6 +4,7 @@ import com.virtual_assistant.meet.domain.Document;
 import com.virtual_assistant.meet.enums.Status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MeetingDTO {
     private Long id;
@@ -16,6 +17,16 @@ public class MeetingDTO {
     private String rememberCode;
 
     private String path;
+  private List<MemberByIdDTO> members;
+
+
+    public List<MemberByIdDTO> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<MemberByIdDTO> members) {
+        this.members = members;
+    }
 
     public Long getId() {
         return id;

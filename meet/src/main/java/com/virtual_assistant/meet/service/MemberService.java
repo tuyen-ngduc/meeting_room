@@ -57,9 +57,51 @@ public class MemberService {
             // Thêm Member vào danh sách members của cuộc họp
             meeting.getMembers().add(existingMember);
         }
-
-
         meetingRepository.save(meeting);
 
     }
-}
+
+    public void deleteMember(Long idMeeting, String idMember) {
+        Meeting meeting = meetingRepository.findById(idMeeting)
+                .orElseThrow(() -> new RuntimeException("Cuộc họp không tồn tại"));
+        Member member = memberRepository.findById(idMember)
+                .orElseThrow(() -> new RuntimeException("Thành viên không tồn tại"));
+        if(meeting.getMembers().contains(member)) {
+            meeting.getMembers().remove(member);
+            meetingRepository.save(meeting);
+        }
+        else {
+            throw new RuntimeException("Thành viên không nằm trong cuộc họp này");
+        }
+
+
+    }
+
+        public void updateMemberRole(Long idMeeting, String idMember, String newRole) {
+            // Tìm Meeting
+            Meeting meeting = meetingRepository.findById(idMeeting)
+                    .orElseThrow(() -> new RuntimeException("Meeting not found with id " + idMeeting));
+
+            // Tìm Member
+            Member member = memberRepository.findById(idMember)
+                    .orElseThrow(() -> new RuntimeException("Member not found with id " + idMember));
+
+            // Kiểm tra xem Member có nằm trong Meeting không
+            if (!meeting.getMembers().contains(member)) {
+                throw new RuntimeException("Member does not belong to the specified meeting");
+            }
+
+            // Tìm Role mới từ database
+            Role role = roleRepository.findByName(newRole)
+                    .orElseThrow(() -> new RuntimeException("Role not found with name " + newRole));
+
+            // Cập nhật Role cho Member
+            member.setRole(role);
+
+            // Lưu lại
+            memberRepository.save(member);
+        }
+    }
+
+
+

@@ -12,6 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, String> {
+
+    Optional<Member> findById(String idMember);
+
     @Query("SELECT m FROM Member m WHERE m.employee.id = :employeeId")
     Member findByEmployeeId(@Param("employeeId") String employeeId);
 

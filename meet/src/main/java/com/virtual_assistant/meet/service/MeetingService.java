@@ -3,6 +3,7 @@ package com.virtual_assistant.meet.service;
 import com.virtual_assistant.meet.domain.*;
 import com.virtual_assistant.meet.dto.request.CreateMeetingDTO;
 import com.virtual_assistant.meet.dto.response.MeetingDTO;
+import com.virtual_assistant.meet.dto.response.MemberByIdDTO;
 import com.virtual_assistant.meet.dto.response.MemberDTO;
 import com.virtual_assistant.meet.enums.Status;
 import com.virtual_assistant.meet.repository.AccountRepository;
@@ -36,6 +37,41 @@ public class MeetingService {
     private RoomRepository roomRepository;
     @Autowired
     AccountRepository accountRepository;
+
+
+    public MeetingDTO getMeetingById(long idMeeting) {
+        Meeting meeting = meetingRepository.findById(idMeeting)
+                .orElseThrow(() -> new RuntimeException("Meeting not found with id " + idMeeting));
+
+        MeetingDTO meetingDTO = new MeetingDTO();
+        meetingDTO.setId(meeting.getId());
+        meetingDTO.setName(meeting.getName());
+        meetingDTO.setStartTime(meeting.getStartTime());
+        meetingDTO.setExpectedEndTime(meeting.getExpectedEndTime());
+        meetingDTO.setDepartment(meeting.getDepartment().getName());
+        meetingDTO.setRoom(meeting.getRoom().getName());
+        meetingDTO.setStatus(meeting.getStatus().getDescription());
+        meetingDTO.setRememberCode(meeting.getRememberCode());
+
+
+        List<MemberByIdDTO> memberDTOs = meeting.getMembers().stream()
+                .map(member -> {
+                    MemberByIdDTO memberDTO = new MemberByIdDTO();
+                    Employee employee = member.getEmployee();
+                    Role role = member.getRole();
+                    memberDTO.setIdMember(employee.getId());
+                    memberDTO.setName(employee.getName());
+                    memberDTO.setRole(role.getName());
+
+                    return memberDTO;
+                })
+                .collect(Collectors.toList());
+
+        meetingDTO.setMembers(memberDTOs);
+
+        return meetingDTO;
+    }
+
 
     public List<MemberDTO> getMembersByMeetingId(Long idMeeting) {
         return meetingRepository.findMembersByMeetingId(idMeeting);
@@ -181,7 +217,6 @@ public class MeetingService {
         } else {
             throw new RuntimeException("Meeting not found with id: " + id);
         }
-
 
     }
 }

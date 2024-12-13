@@ -1,5 +1,6 @@
 package com.virtual_assistant.meet.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.virtual_assistant.meet.enums.Status;
 import jakarta.persistence.*;
 

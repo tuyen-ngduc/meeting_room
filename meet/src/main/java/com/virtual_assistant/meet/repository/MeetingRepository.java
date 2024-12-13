@@ -10,9 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
+
+    Optional<Meeting> findById(long id);
     @Query("SELECT new com.virtual_assistant.meet.dto.response.MemberDTO(m.employee.id, m.employee.name, m.employee.department.name) " +
             "FROM Meeting mt JOIN mt.members m " +
             "WHERE mt.id = :idMeeting")

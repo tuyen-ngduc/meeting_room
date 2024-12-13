@@ -1,6 +1,7 @@
 package com.virtual_assistant.meet.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class Member {
     @ManyToOne
     @JoinColumn(name = "idMember")
     private Employee employee;
+
 
     @ManyToMany(mappedBy = "members")
     private List<Meeting> meetings;

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/meetings")
@@ -27,16 +28,18 @@ public class MeetingController {
         List<MemberDTO> members = meetingService.getMembersByMeetingId(idMeeting);
         return ResponseEntity.ok(members);
     }
+
     @PostMapping("/{idMeeting}/add")
     public ResponseEntity<String> addEmployeesToMeeting(@PathVariable Long idMeeting, @RequestBody List<MemberRequestDTO> request) {
-        try{
+        try {
             memberService.addEmployeesToMeeting(idMeeting, request);
             return ResponseEntity.ok("Thêm nhân viên vào cuộc họp thành công!");
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
+
     @PutMapping("/{idMeeting}/{pathRoom}")
     public ResponseEntity<Void> addPathRoom(@PathVariable long idMeeting, @PathVariable String pathRoom) {
         try {
@@ -53,7 +56,9 @@ public class MeetingController {
         try {
             // Gọi service để tạo cuộc họp
             Meeting meeting = meetingService.createMeeting(request);
-            return ResponseEntity.status(HttpStatus.OK).body("Tạo cuộc họp thành công");
+
+
+            return ResponseEntity.ok(meeting.getId());
         } catch (RuntimeException e) {
             // Xử lý lỗi khi tạo file transcript hoặc lỗi khác
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -61,12 +66,15 @@ public class MeetingController {
     }
 
     @GetMapping("/my-meetings")
-    public ResponseEntity<List<MeetingDTO>> getAllMeetings() {
+    public ResponseEntity<List<MeetingDTO>> getMeetingsByUser() {
         List<MeetingDTO> meetings = meetingService.getMeetingsByUser();
         return ResponseEntity.ok(meetings);
     }
 
 
-
-
+    @GetMapping("/meeting-id/{idMeeting}")
+    public ResponseEntity<MeetingDTO> getMeetingById(@PathVariable long idMeeting) {
+        MeetingDTO meetingDTO = meetingService.getMeetingById(idMeeting);
+        return ResponseEntity.ok(meetingDTO);
+    }
 }
