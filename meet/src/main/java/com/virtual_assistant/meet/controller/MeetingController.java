@@ -3,6 +3,7 @@ package com.virtual_assistant.meet.controller;
 import com.virtual_assistant.meet.domain.Meeting;
 import com.virtual_assistant.meet.dto.request.CreateMeetingDTO;
 import com.virtual_assistant.meet.dto.request.MemberRequestDTO;
+import com.virtual_assistant.meet.dto.response.MeetingDTO;
 import com.virtual_assistant.meet.dto.response.MemberDTO;
 import com.virtual_assistant.meet.service.MeetingService;
 import com.virtual_assistant.meet.service.MemberService;
@@ -42,11 +43,17 @@ public class MeetingController {
         try {
             // Gọi service để tạo cuộc họp
             Meeting meeting = meetingService.createMeeting(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Tạo tài khoản thành công");
+            return ResponseEntity.status(HttpStatus.OK).body("Tạo cuộc họp thành công");
         } catch (RuntimeException e) {
             // Xử lý lỗi khi tạo file transcript hoặc lỗi khác
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/my-meetings")
+    public ResponseEntity<List<MeetingDTO>> getAllMeetings() {
+        List<MeetingDTO> meetings = meetingService.getMeetingsByUser();
+        return ResponseEntity.ok(meetings);
     }
 
 

@@ -1,15 +1,17 @@
 package com.virtual_assistant.meet.service;
 
-import com.virtual_assistant.meet.domain.Department;
-import com.virtual_assistant.meet.domain.Meeting;
-import com.virtual_assistant.meet.domain.Room;
+import com.virtual_assistant.meet.domain.*;
 import com.virtual_assistant.meet.dto.request.CreateMeetingDTO;
+import com.virtual_assistant.meet.dto.response.MeetingDTO;
 import com.virtual_assistant.meet.dto.response.MemberDTO;
 import com.virtual_assistant.meet.enums.Status;
+import com.virtual_assistant.meet.repository.AccountRepository;
 import com.virtual_assistant.meet.repository.DepartmentRepository;
 import com.virtual_assistant.meet.repository.MeetingRepository;
 import com.virtual_assistant.meet.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MeetingService {
@@ -30,6 +34,8 @@ public class MeetingService {
     private DepartmentRepository departmentRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    AccountRepository accountRepository;
     public List<MemberDTO> getMembersByMeetingId(Long idMeeting) {
         return meetingRepository.findMembersByMeetingId(idMeeting);
     }
@@ -43,9 +49,23 @@ public class MeetingService {
         Room room = roomRepository.findByName(request.getRoom())
                 .orElseThrow(() -> new RuntimeException("Phòng họp không tồn tại: " + request.getRoom()));
 
-
+        // Thời gian bắt đầu và kết thúc dự kiến
         LocalDateTime startTime = request.getStartTime();
+        LocalDateTime expectedEndTime = request.getExpectedEndTime();
         LocalDateTime endTime = null;
+
+        if (expectedEndTime.isBefore(startTime)) {
+            throw new RuntimeException("Thời gian kết thúc dự kiến không thể trước thời gian bắt đầu.");
+        }
+
+        if (!room.getName().equalsIgnoreCase("Online")) {
+            List<Meeting> conflictingMeetings = meetingRepository.findConflictingMeetings(room.getId(), startTime, expectedEndTime);
+            if (!conflictingMeetings.isEmpty()) {
+                throw new RuntimeException("Phòng họp " + room.getName() + " đã có cuộc họp khác trong khung giờ này.");
+            }
+
+        }
+
 
 
         // Tạo cuộc họp mới
@@ -53,6 +73,7 @@ public class MeetingService {
         meeting.setName(request.getName());
         meeting.setRememberCode(request.getRememberCode());
         meeting.setStartTime(startTime);
+        meeting.setExpectedEndTime(expectedEndTime);
         meeting.setEndTime(endTime);
         meeting.setRoom(room);
         meeting.setDepartment(department);
@@ -109,5 +130,48 @@ public class MeetingService {
 
         return transcriptFilePath.toString();
     }
+
+
+    public List<MeetingDTO> getMeetingsByUser() {
+        // Lấy thông tin người dùng từ token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Lấy tên người dùng từ token
+
+        // Tìm tài khoản từ username và lấy Employee tương ứng
+        Optional<Account> account = accountRepository.findByUsername(username);
+        Employee currentEmployee = account.get().getEmployee(); // Lấy Employee liên kết với tài khoản
+
+        // Kiểm tra vị trí của nhân viên, nếu là "Thư ký", lấy tất cả cuộc họp
+        boolean isSecretary = currentEmployee.getPosition().getName().equals("Thư ký");
+
+        List<Meeting> meetings;
+
+        if (isSecretary) {
+            // Nếu là "Thư ký", lấy tất cả cuộc họp
+            meetings = meetingRepository.findAll();
+        } else {
+            // Nếu không, lấy danh sách cuộc họp mà Employee tham gia qua bảng meeting_member
+            meetings = meetingRepository.findByMembersEmployee(currentEmployee);
+        }
+
+        return meetings.stream().map(meeting -> {
+            MeetingDTO dto = new MeetingDTO();
+            dto.setId(meeting.getId());
+            dto.setName(meeting.getName());
+            dto.setStartTime(meeting.getStartTime());
+            dto.setExpectedEndTime(meeting.getExpectedEndTime());
+            dto.setDepartment(meeting.getDepartment().getName());  // Lấy tên phòng ban
+            dto.setRoom(meeting.getRoom().getName());  // Lấy tên phòng họp
+            dto.setStatus(meeting.getStatus().getDescription());  // Lấy trạng thái cuộc họp
+            dto.setRememberCode(meeting.getRememberCode());  // Mã gọi nhớ
+            if (meeting.getDocuments() != null && !meeting.getDocuments().isEmpty()) {
+                // Lấy đường dẫn của tài liệu đầu tiên
+                Document document = meeting.getDocuments().get(0); // Hoặc bạn có thể xử lý theo cách khác nếu có nhiều tài liệu
+                dto.setPath(document.getPath());  // Chỉ lấy đường dẫn tài liệu
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 
 }

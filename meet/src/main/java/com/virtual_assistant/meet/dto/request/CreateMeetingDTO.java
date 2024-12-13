@@ -6,6 +6,7 @@ public class CreateMeetingDTO {
     private String name;
     private String rememberCode;
     private LocalDateTime startTime;
+    private LocalDateTime expectedEndTime;
     private String department;
     private String room;
 
@@ -55,5 +56,13 @@ public class CreateMeetingDTO {
 
     public void setRoom(String room) {
         this.room = room;
+    }
+
+    public LocalDateTime getExpectedEndTime() {
+        return expectedEndTime;
+    }
+
+    public void setExpectedEndTime(LocalDateTime expectedEndTime) {
+        this.expectedEndTime = expectedEndTime;
     }
 }

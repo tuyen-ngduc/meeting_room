@@ -35,18 +35,31 @@ public class MemberService {
         for (MemberRequestDTO dto : request) {
             Employee employee = employeeRepository.findById(dto.getIdMember())
                     .orElseThrow(() -> new RuntimeException("Nhân viên có id " + dto.getIdMember() + " không tồn tại"));
+            List<Member> existingMembers = memberRepository.findMembersByEmployeeAndMeetingTime(
+                    employee.getId(), meeting.getStartTime());
+
+            if (!existingMembers.isEmpty()) {
+                throw new RuntimeException("Nhân viên " + employee.getId() + " đã tham gia cuộc họp khác cùng giờ.");
+            }
+
             Role role = roleRepository.findByName(dto.getRoleName())
+
                     .orElseThrow(() -> new RuntimeException("Chức danh " + dto.getRoleName() + " không tồn tại"));
+            Member existingMember = memberRepository.findByEmployeeId(employee.getId());
 
-            Member newMember = new Member();
-            newMember.setEmployee(employee);
-            newMember.setRole(role);
-            memberRepository.save(newMember);
-            // Làm mới entity meeting để đảm bảo không có vấn đề đồng bộ
-            meeting = meetingRepository.findById(idMeeting)
-                    .orElseThrow(() -> new RuntimeException("Meeting not found"));
+            if (existingMember == null) {
+                // Nếu chưa tồn tại, tạo Member mới
+                existingMember = new Member();
+                existingMember.setEmployee(employee);
+                existingMember.setRole(role);
+                memberRepository.save(existingMember);
+            }
 
+            // Thêm Member vào danh sách members của cuộc họp
+            meeting.getMembers().add(existingMember);
         }
+
+
         meetingRepository.save(meeting);
 
     }

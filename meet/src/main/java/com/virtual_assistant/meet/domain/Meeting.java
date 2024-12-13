@@ -15,6 +15,7 @@ public class Meeting {
     private String rememberCode;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private LocalDateTime expectedEndTime;
 
     @ManyToOne
     @JoinColumn(name = "department")
@@ -28,7 +29,7 @@ public class Meeting {
     private String transcript;
     private String path;
 
-    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "meeting")
     private List<Document> documents;
 
     @ManyToMany
@@ -133,5 +134,13 @@ public class Meeting {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public LocalDateTime getExpectedEndTime() {
+        return expectedEndTime;
+    }
+
+    public void setExpectedEndTime(LocalDateTime expectedEndTime) {
+        this.expectedEndTime = expectedEndTime;
     }
 }
