@@ -5,7 +5,7 @@ public enum Status {
     ONGOING("Đang diễn ra"),
     COMPLETED("Đã hoàn thành"),
 
-    NOT_STARTED("chưa bắt đầu");
+    NOT_STARTED("Chưa bắt đầu");
 
     private final String description;
 

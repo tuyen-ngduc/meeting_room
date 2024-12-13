@@ -36,9 +36,11 @@ public class MeetingService {
     private RoomRepository roomRepository;
     @Autowired
     AccountRepository accountRepository;
+
     public List<MemberDTO> getMembersByMeetingId(Long idMeeting) {
         return meetingRepository.findMembersByMeetingId(idMeeting);
     }
+
     @Transactional(rollbackFor = RuntimeException.class)
     public Meeting createMeeting(CreateMeetingDTO request) {
         // Kiểm tra phòng ban
@@ -67,7 +69,6 @@ public class MeetingService {
         }
 
 
-
         // Tạo cuộc họp mới
         Meeting meeting = new Meeting();
         meeting.setName(request.getName());
@@ -90,27 +91,25 @@ public class MeetingService {
 
 
     }
-        public Status getMeetingStatus(LocalDateTime startTime, LocalDateTime endTime) {
-            LocalDateTime nowTime = LocalDateTime.now();
-            if (nowTime.isBefore(startTime)) {
-                // Tính khoảng cách thời gian giữa thời gian hiện tại và thời gian bắt đầu
-                long hoursDifference = Duration.between(nowTime, startTime).toHours();
-                if (hoursDifference >= 36) {
-                    return Status.NOT_STARTED;
-                } else {
-                    return Status.UPCOMING;
-                }
+
+    public Status getMeetingStatus(LocalDateTime startTime, LocalDateTime endTime) {
+        LocalDateTime nowTime = LocalDateTime.now();
+        if (nowTime.isBefore(startTime)) {
+            // Tính khoảng cách thời gian giữa thời gian hiện tại và thời gian bắt đầu
+            long hoursDifference = Duration.between(nowTime, startTime).toHours();
+            if (hoursDifference >= 36) {
+                return Status.NOT_STARTED;
+            } else {
+                return Status.UPCOMING;
             }
-            else {
-                if (endTime != null) {
-                    return Status.COMPLETED;
-                } else {
-                    return Status.ONGOING;
-                }
+        } else {
+            if (endTime != null) {
+                return Status.COMPLETED;
+            } else {
+                return Status.ONGOING;
             }
         }
-
-
+    }
 
 
     private String saveMeetingTranscript(Meeting meeting) throws IOException {
@@ -172,5 +171,17 @@ public class MeetingService {
         }).collect(Collectors.toList());
     }
 
+    public void addPathRoom(long id, String path) {
+        Optional<Meeting> meetingOptional = meetingRepository.findById(id);
 
+        if (meetingOptional.isPresent()) {
+            Meeting meeting = meetingOptional.get();
+            meeting.setPath(path);
+            meetingRepository.save(meeting);
+        } else {
+            throw new RuntimeException("Meeting not found with id: " + id);
+        }
+
+
+    }
 }

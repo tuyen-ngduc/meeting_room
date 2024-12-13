@@ -37,6 +37,16 @@ public class MeetingController {
         }
 
     }
+    @PutMapping("/{idMeeting}/{pathRoom}")
+    public ResponseEntity<Void> addPathRoom(@PathVariable long idMeeting, @PathVariable String pathRoom) {
+        try {
+            meetingService.addPathRoom(idMeeting, pathRoom);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createMeeting(@RequestBody CreateMeetingDTO request) {
