@@ -1,6 +1,7 @@
 package com.virtual_assistant.meet.dto.response;
 
 public class EmployeeInfoDTO {
+    private String id;
     private String name;
     private String dob;
 
@@ -14,6 +15,13 @@ public class EmployeeInfoDTO {
     private String workplace;
     private String department;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

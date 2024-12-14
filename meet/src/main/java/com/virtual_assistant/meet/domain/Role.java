@@ -1,5 +1,6 @@
 package com.virtual_assistant.meet.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class Role {
 
     private String name;
     private String description;
+    @JsonIgnore
     @OneToMany(mappedBy = "role")
     private List<Member> members;
 
