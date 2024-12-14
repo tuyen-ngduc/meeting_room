@@ -12,7 +12,9 @@ import java.util.Optional;
 public interface DepartmentRepository extends JpaRepository<Department, String> {
     @Query("select d.name from Department d")
     List<String> findAllDepartmentNames();
-
+    boolean existsByName(String name);
     Optional<Department> findByName(String name);
+
+
 
 }
