@@ -149,14 +149,14 @@ public class MeetingService {
 
 
     private String saveMeetingTranscript(Meeting meeting) throws IOException {
-        String meetingFolderName = meeting.getRememberCode();
+        String meetingFolderName = meeting.getName();
         Path meetingFolderPath = Paths.get("meeting_transcripts", meetingFolderName);
         File meetingFolder = new File(meetingFolderPath.toString());
         if (!meetingFolder.exists()) {
             meetingFolder.mkdirs();
         }
 
-        String transcriptFileName = "transcript.txt";
+        String transcriptFileName = meeting.getRememberCode() + "_transcript.txt";
         Path transcriptFilePath = meetingFolderPath.resolve(transcriptFileName);
 
         try (FileWriter fileWriter = new FileWriter(transcriptFilePath.toFile())) {
@@ -218,5 +218,43 @@ public class MeetingService {
             throw new RuntimeException("Meeting not found with id: " + id);
         }
 
+    }
+
+    public void updateMeeting(Long idMeeting, MeetingDTO meetingDTO) {
+        // Tìm cuộc họp theo ID
+        Meeting meeting = meetingRepository.findById(idMeeting)
+                .orElseThrow(() -> new RuntimeException("Meeting not found with id " + idMeeting));
+
+        // Cập nhật các thuộc tính
+        if (meetingDTO.getName() != null) {
+            meeting.setName(meetingDTO.getName());
+        }
+
+        if (meetingDTO.getRememberCode() != null) {
+            meeting.setRememberCode(meetingDTO.getRememberCode());
+        }
+
+        if (meetingDTO.getStartTime() != null) {
+            meeting.setStartTime(meetingDTO.getStartTime());
+        }
+
+        if (meetingDTO.getExpectedEndTime() != null) {
+            meeting.setExpectedEndTime(meetingDTO.getExpectedEndTime());
+        }
+
+        if (meetingDTO.getDepartment() != null) {
+            Department department = departmentRepository.findByName(meetingDTO.getDepartment())
+                    .orElseThrow(() -> new RuntimeException("Department not found with id " + meetingDTO.getDepartment()));
+            meeting.setDepartment(department);
+        }
+
+        if (meetingDTO.getRoom() != null) {
+            Room room = roomRepository.findByName(meetingDTO.getRoom())
+                    .orElseThrow(() -> new RuntimeException("Room not found with id " + meetingDTO.getRoom()));
+            meeting.setRoom(room);
+        }
+
+        // Lưu lại cuộc họp đã chỉnh sửa
+        meetingRepository.save(meeting);
     }
 }

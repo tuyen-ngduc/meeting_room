@@ -77,4 +77,17 @@ public class MeetingController {
         MeetingDTO meetingDTO = meetingService.getMeetingById(idMeeting);
         return ResponseEntity.ok(meetingDTO);
     }
+
+    @PutMapping("/{idMeeting}")
+    public ResponseEntity<String> updateMeeting(
+            @PathVariable Long idMeeting,
+            @RequestBody MeetingDTO meetingDTO) {
+        try {
+            meetingService.updateMeeting(idMeeting, meetingDTO);
+            return ResponseEntity.ok("Meeting updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
