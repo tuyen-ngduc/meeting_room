@@ -5,10 +5,13 @@ public class MemberDTO {
     private String name;
     private String department;
 
-    public MemberDTO(String idMember, String name, String department) {
+    private String role;
+
+    public MemberDTO(String idMember, String name, String department, String role) {
         this.idMember = idMember;
         this.name = name;
         this.department = department;
+        this.role = role;
     }
 
     public String getIdMember() {
@@ -33,5 +36,13 @@ public class MemberDTO {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

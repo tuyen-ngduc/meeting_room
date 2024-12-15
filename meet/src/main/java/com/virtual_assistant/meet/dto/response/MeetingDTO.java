@@ -17,7 +17,7 @@ public class MeetingDTO {
     private String rememberCode;
 
     private String path;
-  private List<MemberByIdDTO> members;
+    private List<MemberByIdDTO> members;
 
 
     public List<MemberByIdDTO> getMembers() {

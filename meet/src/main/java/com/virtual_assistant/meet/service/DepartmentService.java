@@ -13,6 +13,10 @@ public class DepartmentService {
     @Autowired
     DepartmentRepository departmentRepository;
 
+    public List<Department> getAllDepartments() {
+        return departmentRepository.findAll();
+    }
+
     public List<String> getAllDepartmentNames() {
         return departmentRepository.findAllDepartmentNames();
     }

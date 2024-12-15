@@ -1,11 +1,11 @@
 package com.virtual_assistant.meet.controller;
 
+import com.virtual_assistant.meet.domain.Room;
 import com.virtual_assistant.meet.dto.response.RoomDTO;
 import com.virtual_assistant.meet.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,5 +17,26 @@ public class RoomController {
     @GetMapping
     public List<RoomDTO> getAllRoom() {
         return roomService.getAllRoom();
+    }
+
+    // Thêm phòng họp
+    @PostMapping
+    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
+        Room createdRoom = roomService.createRoom(room);
+        return ResponseEntity.ok(createdRoom);
+    }
+
+    // Cập nhật phòng họp
+    @PutMapping("/{id}")
+    public ResponseEntity<Room> updateRoom(@PathVariable Long id, @RequestBody Room room) {
+        Room updatedRoom = roomService.updateRoom(id, room);
+        return ResponseEntity.ok(updatedRoom);
+    }
+
+    // Xóa phòng họp
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.noContent().build();
     }
 }

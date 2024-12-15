@@ -220,40 +220,22 @@ public class MeetingService {
 
     }
 
-    public void updateMeeting(Long idMeeting, MeetingDTO meetingDTO) {
+    public void updateMeeting(Long idMeeting, com.virtual_assistant.meet.dto.request.MeetingDTO meetingDTO) {
         // Tìm cuộc họp theo ID
         Meeting meeting = meetingRepository.findById(idMeeting)
                 .orElseThrow(() -> new RuntimeException("Meeting not found with id " + idMeeting));
 
-        // Cập nhật các thuộc tính
-        if (meetingDTO.getName() != null) {
+
             meeting.setName(meetingDTO.getName());
-        }
-
-        if (meetingDTO.getRememberCode() != null) {
             meeting.setRememberCode(meetingDTO.getRememberCode());
-        }
-
-        if (meetingDTO.getStartTime() != null) {
             meeting.setStartTime(meetingDTO.getStartTime());
-        }
-
-        if (meetingDTO.getExpectedEndTime() != null) {
             meeting.setExpectedEndTime(meetingDTO.getExpectedEndTime());
-        }
-
-        if (meetingDTO.getDepartment() != null) {
             Department department = departmentRepository.findByName(meetingDTO.getDepartment())
                     .orElseThrow(() -> new RuntimeException("Department not found with id " + meetingDTO.getDepartment()));
             meeting.setDepartment(department);
-        }
-
-        if (meetingDTO.getRoom() != null) {
             Room room = roomRepository.findByName(meetingDTO.getRoom())
                     .orElseThrow(() -> new RuntimeException("Room not found with id " + meetingDTO.getRoom()));
             meeting.setRoom(room);
-        }
-
         // Lưu lại cuộc họp đã chỉnh sửa
         meetingRepository.save(meeting);
     }

@@ -1,43 +1,18 @@
-package com.virtual_assistant.meet.domain;
+package com.virtual_assistant.meet.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
-import java.util.List;
-
-@Entity
-public class Employee {
-    @Id
+public class EmployeeDTO {
     private String id;
-
     private String name;
     private String dob;
     private String phoneNumber;
     private String degree;
     private String identification;
     private String address;
-    @ManyToOne
-
-    @JoinColumn(name = "position")
-    private Position position;
     private String workplace;
     private String bankAccount;
     private String bank;
-    @ManyToOne
-
-    @JoinColumn(name = "department")
-    private Department department;
-    @JsonIgnore
-    @OneToMany(mappedBy = "employee")
-    private List<Member> members;
-
-    public List<Member> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<Member> members) {
-        this.members = members;
-    }
+    private String position;
+    private String department;
 
     public String getId() {
         return id;
@@ -95,14 +70,6 @@ public class Employee {
         this.address = address;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public String getWorkplace() {
         return workplace;
     }
@@ -127,11 +94,19 @@ public class Employee {
         this.bank = bank;
     }
 
-    public Department getDepartment() {
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(String department) {
         this.department = department;
     }
 }

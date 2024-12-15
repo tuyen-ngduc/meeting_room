@@ -14,6 +14,12 @@ import java.util.List;
 public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
+
+    @GetMapping
+    public ResponseEntity<List<Department>> getAllDepartments() {
+        List<Department> departments = departmentService.getAllDepartments();
+        return ResponseEntity.ok(departments);
+    }
     @GetMapping("/allnames")
     public List<String> getAllDepartmentNames() {
         return departmentService.getAllDepartmentNames();

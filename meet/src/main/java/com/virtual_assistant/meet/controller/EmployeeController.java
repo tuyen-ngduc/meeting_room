@@ -15,30 +15,38 @@ import java.util.List;
 public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
+
+    @GetMapping
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
+    }
     @GetMapping("/infor")
     public List<EmployeeDTO> getAllEmployee() {
        return employeeService.getAllEmployee();
     }
 
+
+
     // Thêm nhân viên
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<?> createEmployee(@RequestBody com.virtual_assistant.meet.dto.request.EmployeeDTO employeeDTO) {
         try {
-            Employee createdEmployee = employeeService.createEmployee(employee);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
+            Employee createdEmployee = employeeService.createEmployee(employeeDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm thành công");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     // Cập nhật thông tin nhân viên
-    @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee employee) {
+    @PutMapping
+    public ResponseEntity<?> updateEmployee(@RequestBody com.virtual_assistant.meet.dto.request.EmployeeDTO employeDTO) {
         try {
-            Employee updatedEmployee = employeeService.updateEmployee(id, employee);
-            return ResponseEntity.ok(updatedEmployee);
+            Employee updatedEmployee = employeeService.updateEmployee(employeDTO);
+            return ResponseEntity.ok("Cập nhật nhân viên thành công");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

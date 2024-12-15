@@ -1,5 +1,6 @@
 package com.virtual_assistant.meet.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class Position {
     private Long id;
 
     private String name;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "position")
     private List<Employee> employees;
 

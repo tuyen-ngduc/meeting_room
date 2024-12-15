@@ -81,7 +81,7 @@ public class MeetingController {
     @PutMapping("/{idMeeting}")
     public ResponseEntity<String> updateMeeting(
             @PathVariable Long idMeeting,
-            @RequestBody MeetingDTO meetingDTO) {
+            @RequestBody com.virtual_assistant.meet.dto.request.MeetingDTO meetingDTO) {
         try {
             meetingService.updateMeeting(idMeeting, meetingDTO);
             return ResponseEntity.ok("Meeting updated successfully");
