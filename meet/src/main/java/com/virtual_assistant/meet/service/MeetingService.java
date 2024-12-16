@@ -239,4 +239,14 @@ public class MeetingService {
         // Lưu lại cuộc họp đã chỉnh sửa
         meetingRepository.save(meeting);
     }
+
+    public Meeting updatePath(Long meetingId, String newPath) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new RuntimeException("Meeting not found with ID: " + meetingId));
+        meeting.setPath(newPath);
+        return meetingRepository.save(meeting);
+    }
+
+
+
 }

@@ -1,18 +1,11 @@
-package com.virtual_assistant.meet.domain;
+package com.virtual_assistant.meet.dto.response;
 
-import jakarta.persistence.*;
-
-@Entity
-public class Document {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class DocumentFileDTO {
     private long id;
     private String name;
     private String path;
 
-    @ManyToOne
-    @JoinColumn(name = "idMeeting", nullable = false)
-    private Meeting meeting;
+    private long idMeeting;
 
     public long getId() {
         return id;
@@ -38,11 +31,11 @@ public class Document {
         this.path = path;
     }
 
-    public Meeting getMeeting() {
-        return meeting;
+    public void setIdMeeting(long idMeeting) {
+        this.idMeeting = idMeeting;
     }
 
-    public void setMeeting(Meeting meeting) {
-        this.meeting = meeting;
+    public long getIdMeeting() {
+        return idMeeting;
     }
 }

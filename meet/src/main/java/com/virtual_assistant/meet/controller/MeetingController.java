@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -88,6 +89,16 @@ public class MeetingController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PutMapping("/{id}/path")
+    public ResponseEntity<?> updatePath(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        String newPath = request.get("path");
+        if (newPath == null || newPath.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        Meeting updatedMeeting = meetingService.updatePath(id, newPath);
+        return ResponseEntity.ok("Thêm thành công");
     }
 
 }
