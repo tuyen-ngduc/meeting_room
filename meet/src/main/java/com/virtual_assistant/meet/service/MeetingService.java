@@ -140,9 +140,15 @@ public class MeetingService {
             }
         } else {
             if (endTime != null) {
-                return Status.COMPLETED;
+                long hoursDifference = Duration.between(nowTime, startTime).toHours();
+                if(hoursDifference <= -12) {
+                    return Status.CANCELED;
+                }
+                else {
+                    return Status.ONGOING;
+                }
             } else {
-                return Status.ONGOING;
+                return Status.COMPLETED;
             }
         }
     }

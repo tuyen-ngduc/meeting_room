@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member {
@@ -18,7 +20,8 @@ public class Member {
 
 
     @ManyToMany(mappedBy = "members")
-    private List<Meeting> meetings;
+    private Set<Meeting> meetings = new HashSet<>();
+
 
     @ManyToOne
     @JoinColumn(name = "idRole")
@@ -40,11 +43,11 @@ public class Member {
         this.id = id;
     }
 
-    public List<Meeting> getMeetings() {
+    public Set<Meeting> getMeetings() {
         return meetings;
     }
 
-    public void setMeetings(List<Meeting> meetings) {
+    public void setMeetings(Set<Meeting> meetings) {
         this.meetings = meetings;
     }
 

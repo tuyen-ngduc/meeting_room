@@ -4,18 +4,28 @@ import com.virtual_assistant.meet.service.MeetingService;
 import com.virtual_assistant.meet.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/members")
 public class MemberController {
+    private final MemberService memberService;
+    private final SimpMessagingTemplate messagingTemplate;
+
     @Autowired
-    MemberService memberService;
+    public MemberController(MemberService memberService, SimpMessagingTemplate messagingTemplate) {
+        this.memberService = memberService;
+        this.messagingTemplate = messagingTemplate;
+    }
 
     @DeleteMapping("/{idMeeting}/{idMember}")
     public ResponseEntity<String> deleteMember(@PathVariable long idMeeting, @PathVariable String idMember){
                 try {
                     memberService.deleteMember(idMeeting, idMember);
+                    // Gửi thông báo qua WebSocket tới topic "/topic/members"
+                    String message = "Thành viên " + idMember + " đã bị xóa khỏi cuộc họp " + idMeeting;
+                    messagingTemplate.convertAndSend("/topic/members", message);
                     return ResponseEntity.ok("Xóa thành công");
                 }catch (RuntimeException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());

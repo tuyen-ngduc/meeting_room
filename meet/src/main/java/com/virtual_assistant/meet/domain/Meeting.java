@@ -5,7 +5,9 @@ import com.virtual_assistant.meet.enums.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Meeting {
@@ -39,13 +41,13 @@ public class Meeting {
             inverseJoinColumns = @JoinColumn(name = "idMember")
 
     )
-    private List<Member> members;
+    private Set<Member> members = new HashSet<>();
 
-    public List<Member> getMembers() {
+    public Set<Member> getMembers() {
         return members;
     }
 
-    public void setMembers(List<Member> members) {
+    public void setMembers(Set<Member> members) {
         this.members = members;
     }
 

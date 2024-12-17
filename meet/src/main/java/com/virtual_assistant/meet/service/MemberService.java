@@ -39,7 +39,7 @@ public class MemberService {
                     employee.getId(), meeting.getStartTime());
 
             if (!existingMembers.isEmpty()) {
-                throw new RuntimeException("Nhân viên " + employee.getId() + " đã tham gia cuộc họp khác cùng giờ.");
+                throw new RuntimeException("Nhân viên " + employee.getId() + " đã tham gia một cuộc họp cùng giờ.");
             }
 
             Role role = roleRepository.findByName(dto.getRoleName())
