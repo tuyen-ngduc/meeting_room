@@ -47,7 +47,6 @@ public class DocumentService {
         // Tìm tài khoản từ username và lấy Employee tương ứng
         Optional<Account> account = accountRepository.findByUsername(username);
         Employee currentEmployee = account.get().getEmployee();
-        // Kiểm tra vị trí của nhân viên, nếu là "Thư ký", lấy tất cả cuộc họp
         boolean isSecretary = currentEmployee.getPosition().getName().equals("Thư ký");
 
         List<Meeting> meetings;
@@ -71,14 +70,9 @@ public class DocumentService {
 
     // Lưu file và cập nhật thông tin vào cơ sở dữ liệu
     public void saveDocument(MultipartFile file, long meetingId) throws IOException {
-        // Lấy Meeting từ ID
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-
-        // Đường dẫn thư mục lưu trữ file
         String uploadDir = "documents/";
-
-        // Tạo đường dẫn lưu file
         Path path = Paths.get(uploadDir + file.getOriginalFilename());
 
         // Lưu file vào thư mục
