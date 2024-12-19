@@ -115,6 +115,7 @@ public class AccountService {
             Employee employee = acc.getEmployee();
 
             EmployeeInfoDTO info = new EmployeeInfoDTO();
+            info.setId(employee.getId());
             info.setName(employee.getName());
             info.setDob(employee.getDob());
             info.setPhoneNumber(employee.getPhoneNumber());
