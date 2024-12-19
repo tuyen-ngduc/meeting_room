@@ -210,11 +210,12 @@ public class MeetingService {
             dto.setRoom(meeting.getRoom().getName());  // Lấy tên phòng họp
             dto.setStatus(meeting.getStatus().getDescription());
             dto.setRememberCode(meeting.getRememberCode());
-            if (meeting.getDocuments() != null && !meeting.getDocuments().isEmpty()) {
-
-                Document document = meeting.getDocuments().get(0);
-                dto.setPath(document.getPath());
-            }
+//            if (meeting.getDocuments() != null && !meeting.getDocuments().isEmpty()) {
+//
+//                Document document = meeting.getDocuments().get(0);
+//                dto.setPath(document.getPath());
+//            }
+            dto.setPath((meeting.getPath()));
             return dto;
         }).collect(Collectors.toList());
     }
