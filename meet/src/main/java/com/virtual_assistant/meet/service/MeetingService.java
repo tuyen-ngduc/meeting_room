@@ -51,6 +51,7 @@ public class MeetingService {
         meetingDTO.setDepartment(meeting.getDepartment().getName());
         meetingDTO.setRoom(meeting.getRoom().getName());
         meetingDTO.setStatus(meeting.getStatus().getDescription());
+        meetingDTO.setPath(meeting.getPath());
         meetingDTO.setRememberCode(meeting.getRememberCode());
 
 
