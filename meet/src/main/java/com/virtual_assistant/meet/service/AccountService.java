@@ -5,6 +5,8 @@ import com.virtual_assistant.meet.domain.Account;
 import com.virtual_assistant.meet.domain.Employee;
 import com.virtual_assistant.meet.dto.request.Login;
 import com.virtual_assistant.meet.dto.request.Register;
+import com.virtual_assistant.meet.dto.response.AccountDTO;
+import com.virtual_assistant.meet.dto.response.EmployeeDTO;
 import com.virtual_assistant.meet.dto.response.EmployeeInfoDTO;
 import com.virtual_assistant.meet.repository.AccountRepository;
 import com.virtual_assistant.meet.repository.EmployeeRepository;
@@ -13,7 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -24,6 +28,26 @@ public class AccountService {
     AccountRepository accountRepository;
     @Autowired
     EmployeeRepository employeeRepository;
+
+
+
+    public boolean changePasswordForUser(String username, String newPassword) {
+        // Kiểm tra tài khoản người dùng từ username
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với tên đăng nhập: " + username));
+
+        // Cập nhật mật khẩu mới
+        account.setPassword(newPassword);
+        accountRepository.save(account);
+        return true;
+    }
+
+    // Xóa tài khoản
+    public void deleteAccount(Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+        accountRepository.delete(account);
+    }
 
     public Optional<String> register(Register request) {
         Optional<Account> accountOpt = accountRepository.findByUsername(request.getUsername());
@@ -46,6 +70,22 @@ public class AccountService {
         } catch (Exception e) {
             return Optional.of("Lỗi khi tạo tài khoản");
         }
+    }
+
+    public List<AccountDTO> getAllAccounts() {
+        return accountRepository.findAll().stream()
+                .map(account -> new AccountDTO(
+                        account.getId(),
+                        account.getUsername(),
+                        account.getPassword(),
+                        account.getEmployee() != null
+                                ? new EmployeeDTO(
+                                account.getEmployee().getId(),
+                                account.getEmployee().getName()
+                        )
+                                : null
+                ))
+                .collect(Collectors.toList());
     }
 
     public Optional<String> login(Login request) {

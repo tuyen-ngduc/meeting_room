@@ -130,28 +130,33 @@ public class MeetingService {
 
     public Status getMeetingStatus(LocalDateTime startTime, LocalDateTime endTime) {
         LocalDateTime nowTime = LocalDateTime.now();
+
+        if (startTime == null) {
+            return Status.NOT_STARTED; // Nếu chưa có thời gian bắt đầu, mặc định là chưa bắt đầu
+        }
+
         if (nowTime.isBefore(startTime)) {
-            // Tính khoảng cách thời gian giữa thời gian hiện tại và thời gian bắt đầu
             long hoursDifference = Duration.between(nowTime, startTime).toHours();
             if (hoursDifference >= 36) {
-                return Status.NOT_STARTED;
+                return Status.NOT_STARTED; // Còn nhiều hơn 36 giờ mới diễn ra
             } else {
-                return Status.UPCOMING;
+                return Status.UPCOMING; // Sắp diễn ra (trong vòng 36 giờ)
             }
         } else {
             if (endTime != null) {
-                long hoursDifference = Duration.between(nowTime, startTime).toHours();
-                if(hoursDifference <= -12) {
-                    return Status.CANCELED;
-                }
-                else {
-                    return Status.ONGOING;
+                if (nowTime.isAfter(endTime)) {
+                    return Status.COMPLETED; // Đã kết thúc vì thời gian hiện tại sau thời gian kết thúc
+                } else {
+                    return Status.ONGOING; // Đang diễn ra
                 }
             } else {
-                return Status.COMPLETED;
+                // endTime == null
+                return Status.ONGOING; // Nếu không có thời gian kết thúc, giả định đang diễn ra
             }
         }
     }
+
+
 
 
     private String saveMeetingTranscript(Meeting meeting) throws IOException {

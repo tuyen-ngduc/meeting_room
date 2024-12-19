@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,17 +46,26 @@ public class MemberService {
             Role role = roleRepository.findByName(dto.getRoleName())
 
                     .orElseThrow(() -> new RuntimeException("Chức danh " + dto.getRoleName() + " không tồn tại"));
-            Member existingMember = memberRepository.findByEmployeeId(employee.getId());
+//            Member existingMember = memberRepository.findByEmployeeId(employee.getId());
+//
+//            if (existingMember == null) {
+//                existingMember = new Member();
+//                existingMember.setEmployee(employee);
+//                existingMember.setRole(role);
+//                memberRepository.save(existingMember);
+//            }
+//
+//            // Thêm Member vào danh sách members của cuộc họp
+//            meeting.getMembers().add(existingMember);
+            // Tạo một Member mới cho cuộc họp này với vai trò tương ứng
+            Member newMember = new Member();
+            newMember.setId(employee.getId()); // Set ID của Member là ID của Employee
+            newMember.setEmployee(employee);
+            newMember.setRole(role);
+            memberRepository.save(newMember); // Lưu Member vào cơ sở dữ liệu
 
-            if (existingMember == null) {
-                existingMember = new Member();
-                existingMember.setEmployee(employee);
-                existingMember.setRole(role);
-                memberRepository.save(existingMember);
-            }
-
-            // Thêm Member vào danh sách members của cuộc họp
-            meeting.getMembers().add(existingMember);
+            // Thêm Member vào cuộc họp
+            meeting.getMembers().add(newMember);
         }
         meetingRepository.save(meeting);
 

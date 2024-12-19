@@ -1,9 +1,17 @@
 package com.virtual_assistant.meet.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeDTO {
     private String idEmployee;
     private String name;
     private String department;
+
+    public EmployeeDTO(String idEmployee, String name) {
+        this.idEmployee = idEmployee;
+        this.name = name;
+    }
 
     public EmployeeDTO(String idEmployee, String name, String department) {
         this.idEmployee = idEmployee;
