@@ -2,9 +2,11 @@ package com.virtual_assistant.meet.controller;
 
 import com.virtual_assistant.meet.domain.Meeting;
 import com.virtual_assistant.meet.dto.request.CreateMeetingDTO;
+import com.virtual_assistant.meet.dto.request.MeetingStatusUpdateRequest;
 import com.virtual_assistant.meet.dto.request.MemberRequestDTO;
 import com.virtual_assistant.meet.dto.response.MeetingDTO;
 import com.virtual_assistant.meet.dto.response.MemberDTO;
+import com.virtual_assistant.meet.enums.Status;
 import com.virtual_assistant.meet.service.MeetingService;
 import com.virtual_assistant.meet.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +57,11 @@ public class MeetingController {
     @PostMapping("/create")
     public ResponseEntity<?> createMeeting(@RequestBody CreateMeetingDTO request) {
         try {
-            // Gọi service để tạo cuộc họp
             Meeting meeting = meetingService.createMeeting(request);
 
 
             return ResponseEntity.ok(meeting.getId());
         } catch (RuntimeException e) {
-            // Xử lý lỗi khi tạo file transcript hoặc lỗi khác
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -90,15 +90,25 @@ public class MeetingController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    @PutMapping("/{id}/path")
-    public ResponseEntity<?> updatePath(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        String newPath = request.get("path");
-        if (newPath == null || newPath.isEmpty()) {
-            return ResponseEntity.badRequest().body(null);
+    @PutMapping("/update-status")
+    public ResponseEntity<String> updateMeetingStatus(@RequestBody MeetingStatusUpdateRequest request) {
+        try {
+            meetingService.updateMeetingStatus(request.getIdMeeting(), request.getStatus());
+            return ResponseEntity.ok("Trạng thái cuộc họp đã được cập nhật thành công.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cập nhật trạng thái thất bại: " + e.getMessage());
         }
-        Meeting updatedMeeting = meetingService.updatePath(id, newPath);
-        return ResponseEntity.ok("Thêm thành công");
     }
+
+    @PutMapping("/{idMeeting}/complete")
+    public ResponseEntity<?> completeMeeting(@PathVariable Long idMeeting) {
+        try {
+            meetingService.completeMeeting(idMeeting);
+            return ResponseEntity.ok("Hoàn thành cuộc họp");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 }

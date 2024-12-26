@@ -26,7 +26,6 @@ public class DocumentController {
         return ResponseEntity.ok(meetings);
     }
 
-    // API để tải lên file
     @PostMapping("/upload/{meetingId}")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("meetingId") long meetingId) {
         try {

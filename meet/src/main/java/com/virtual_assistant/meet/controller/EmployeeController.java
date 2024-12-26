@@ -1,6 +1,7 @@
 package com.virtual_assistant.meet.controller;
 
 import com.virtual_assistant.meet.domain.Employee;
+import com.virtual_assistant.meet.dto.request.UpdateProfileRequest;
 import com.virtual_assistant.meet.dto.response.EmployeeDTO;
 import com.virtual_assistant.meet.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,16 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateEmployeeProfile(@RequestBody UpdateProfileRequest updateRequest) {
+        try {
+            employeeService.updateEmployeeProfile(updateRequest);
+            return ResponseEntity.ok("Cập nhật thông tin thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
@@ -27,8 +38,6 @@ public class EmployeeController {
     }
 
 
-
-    // Thêm nhân viên
     @PostMapping
     public ResponseEntity<?> createEmployee(@RequestBody com.virtual_assistant.meet.dto.request.EmployeeDTO employeeDTO) {
         try {
@@ -39,7 +48,6 @@ public class EmployeeController {
         }
     }
 
-    // Cập nhật thông tin nhân viên
     @PutMapping
     public ResponseEntity<?> updateEmployee(@RequestBody com.virtual_assistant.meet.dto.request.EmployeeDTO employeDTO) {
         try {
@@ -50,7 +58,6 @@ public class EmployeeController {
         }
     }
 
-    // Xóa nhân viên
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable String id) {
         try {
@@ -61,7 +68,6 @@ public class EmployeeController {
         }
     }
 
-    // Lấy thông tin nhân viên
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable String id) {
         try {

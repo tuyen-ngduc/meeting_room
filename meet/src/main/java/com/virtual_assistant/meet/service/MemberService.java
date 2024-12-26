@@ -34,32 +34,21 @@ public class MemberService {
         Meeting meeting = meetingRepository.findById(idMeeting)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy cuộc họp có id " + idMeeting));
         for (MemberRequestDTO dto : request) {
-            Employee employee = employeeRepository.findById(dto.getIdMember())
-                    .orElseThrow(() -> new RuntimeException("Nhân viên có id " + dto.getIdMember() + " không tồn tại"));
+            Employee employee = employeeRepository.findByIdEmployee(dto.getIdMember())
+                    .orElseThrow(() -> new RuntimeException("Nhân viên có mã " + dto.getIdMember() + " không tồn tại"));
             List<Member> existingMembers = memberRepository.findMembersByEmployeeAndMeetingTime(
-                    employee.getId(), meeting.getStartTime());
+                    employee.getIdEmployee(), meeting.getStartTime());
 
             if (!existingMembers.isEmpty()) {
-                throw new RuntimeException("Nhân viên " + employee.getId() + " đã tham gia một cuộc họp cùng giờ.");
+                throw new RuntimeException("Nhân viên " + employee.getIdEmployee() + " đã tham gia một cuộc họp cùng giờ.");
             }
 
             Role role = roleRepository.findByName(dto.getRoleName())
 
                     .orElseThrow(() -> new RuntimeException("Chức danh " + dto.getRoleName() + " không tồn tại"));
-//            Member existingMember = memberRepository.findByEmployeeId(employee.getId());
-//
-//            if (existingMember == null) {
-//                existingMember = new Member();
-//                existingMember.setEmployee(employee);
-//                existingMember.setRole(role);
-//                memberRepository.save(existingMember);
-//            }
-//
-//            // Thêm Member vào danh sách members của cuộc họp
-//            meeting.getMembers().add(existingMember);
+
             // Tạo một Member mới cho cuộc họp này với vai trò tương ứng
             Member newMember = new Member();
-            newMember.setId(employee.getId()); // Set ID của Member là ID của Employee
             newMember.setEmployee(employee);
             newMember.setRole(role);
             memberRepository.save(newMember); // Lưu Member vào cơ sở dữ liệu
@@ -74,7 +63,7 @@ public class MemberService {
     public void deleteMember(Long idMeeting, String idMember) {
         Meeting meeting = meetingRepository.findById(idMeeting)
                 .orElseThrow(() -> new RuntimeException("Cuộc họp không tồn tại"));
-        Member member = memberRepository.findById(idMember)
+        Member member = memberRepository.findByEmployee_IdEmployee(idMember)
                 .orElseThrow(() -> new RuntimeException("Thành viên không tồn tại"));
         if(meeting.getMembers().contains(member)) {
             meeting.getMembers().remove(member);
@@ -93,7 +82,7 @@ public class MemberService {
                     .orElseThrow(() -> new RuntimeException("Meeting not found with id " + idMeeting));
 
             // Tìm Member
-            Member member = memberRepository.findById(idMember)
+            Member member = memberRepository.findByEmployee_IdEmployee(idMember)
                     .orElseThrow(() -> new RuntimeException("Member not found with id " + idMember));
 
             // Kiểm tra xem Member có nằm trong Meeting không

@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     Optional<Meeting> findById(long id);
-    @Query("SELECT new com.virtual_assistant.meet.dto.response.MemberDTO(m.employee.id, m.employee.name, m.employee.department.name, m.role.name) " +
+    @Query("SELECT new com.virtual_assistant.meet.dto.response.MemberDTO(m.employee.idEmployee, m.employee.name, m.employee.department.name, m.role.name) " +
             "FROM Meeting mt JOIN mt.members m " +
             "WHERE mt.id = :idMeeting")
     List<MemberDTO> findMembersByMeetingId(@Param("idMeeting") Long idMeeting);

@@ -12,8 +12,9 @@ import java.util.Set;
 @Entity
 public class Member {
     @Id
-    private String id;
-    @MapsId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     @ManyToOne
     @JoinColumn(name = "idMember")
     private Employee employee;
@@ -35,11 +36,11 @@ public class Member {
         this.employee = employee;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

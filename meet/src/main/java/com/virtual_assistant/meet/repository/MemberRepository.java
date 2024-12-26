@@ -13,14 +13,14 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, String> {
 
-    Optional<Member> findById(String idMember);
+    Optional<Member> findByEmployee_IdEmployee(String idEmployee);
 
     @Query("SELECT m FROM Member m WHERE m.employee.id = :employeeId")
     Member findByEmployeeId(@Param("employeeId") String employeeId);
 
 
     @Query("SELECT m FROM Member m JOIN m.meetings meeting " +
-            "WHERE m.employee.id = :employeeId " +
+            "WHERE m.employee.idEmployee = :employeeId " +
             "AND meeting.startTime = :startTime")
     List<Member> findMembersByEmployeeAndMeetingTime(@Param("employeeId") String employeeId,
                                                      @Param("startTime") LocalDateTime startTime);

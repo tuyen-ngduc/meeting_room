@@ -1,9 +1,11 @@
 package com.virtual_assistant.meet.dto.response;
 
+import java.time.LocalDate;
+
 public class EmployeeInfoDTO {
     private String id;
     private String name;
-    private String dob;
+    private LocalDate dob;
 
     private String phoneNumber;
 
@@ -12,8 +14,8 @@ public class EmployeeInfoDTO {
     private String degree;
 
     private String position;
-    private String workplace;
     private String department;
+    private String email;
 
     public String getId() {
         return id;
@@ -31,11 +33,11 @@ public class EmployeeInfoDTO {
         this.name = name;
     }
 
-    public String getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(String dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 
@@ -71,13 +73,6 @@ public class EmployeeInfoDTO {
         this.position = position;
     }
 
-    public String getWorkplace() {
-        return workplace;
-    }
-
-    public void setWorkplace(String workplace) {
-        this.workplace = workplace;
-    }
 
     public String getDepartment() {
         return department;
@@ -85,6 +80,14 @@ public class EmployeeInfoDTO {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 

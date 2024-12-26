@@ -10,11 +10,13 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, String> {
-    Optional<Employee> findById(String id);
+    Optional<Employee> findByUsername(String username);
+    Optional<Employee> findByIdEmployee(String idEmployee);
+
 
     boolean existsById(String id);
 
-    @Query("select new com.virtual_assistant.meet.dto.response.EmployeeDTO(e.id, e.name, d.name) " + " from Employee e " + "JOIN e.department d")
+    @Query("select new com.virtual_assistant.meet.dto.response.EmployeeDTO(e.idEmployee, e.name, d.name) " + " from Employee e " + "JOIN e.department d")
     List<EmployeeDTO> findEmployee();
 
 }

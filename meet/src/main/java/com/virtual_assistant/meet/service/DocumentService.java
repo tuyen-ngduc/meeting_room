@@ -1,14 +1,12 @@
 package com.virtual_assistant.meet.service;
 
-import com.virtual_assistant.meet.domain.Account;
 import com.virtual_assistant.meet.domain.Document;
 import com.virtual_assistant.meet.domain.Employee;
 import com.virtual_assistant.meet.domain.Meeting;
 import com.virtual_assistant.meet.dto.response.DocumentDTO;
 import com.virtual_assistant.meet.dto.response.DocumentFileDTO;
-import com.virtual_assistant.meet.dto.response.MeetingDTO;
-import com.virtual_assistant.meet.repository.AccountRepository;
 import com.virtual_assistant.meet.repository.DocumentRepository;
+import com.virtual_assistant.meet.repository.EmployeeRepository;
 import com.virtual_assistant.meet.repository.MeetingRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -31,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class DocumentService {
     @Autowired
-    AccountRepository accountRepository;
+    EmployeeRepository employeeRepository;
     @Autowired
     MeetingRepository meetingRepository;
 
@@ -45,16 +42,15 @@ public class DocumentService {
         String username = authentication.getName();
 
         // Tìm tài khoản từ username và lấy Employee tương ứng
-        Optional<Account> account = accountRepository.findByUsername(username);
-        Employee currentEmployee = account.get().getEmployee();
-        boolean isSecretary = currentEmployee.getPosition().getName().equals("Thư ký");
+        Optional<Employee> currentEmployee = employeeRepository.findByUsername(username);
+        boolean isSecretary = currentEmployee.get().getPosition().getName().equals("Thư ký");
 
         List<Meeting> meetings;
 
         if (isSecretary) {
             meetings = meetingRepository.findAll();
         } else {
-            meetings = meetingRepository.findByMembersEmployee(currentEmployee);
+            meetings = meetingRepository.findByMembersEmployee(currentEmployee.get());
         }
 
         return meetings.stream().map(meeting -> {

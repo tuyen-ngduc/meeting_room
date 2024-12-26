@@ -1,17 +1,24 @@
 package com.virtual_assistant.meet.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 public class Employee {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String idEmployee;
+
+    private String username;
+    private String password;
 
     private String name;
-    private String dob;
+
+    private LocalDate dob;
     private String phoneNumber;
     private String degree;
     private String identification;
@@ -23,6 +30,7 @@ public class Employee {
     private String workplace;
     private String bankAccount;
     private String bank;
+    private String email;
     @ManyToOne
 
     @JoinColumn(name = "department")
@@ -39,11 +47,11 @@ public class Employee {
         this.members = members;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -55,11 +63,11 @@ public class Employee {
         this.name = name;
     }
 
-    public String getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(String dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 
@@ -133,5 +141,37 @@ public class Employee {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(String idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
