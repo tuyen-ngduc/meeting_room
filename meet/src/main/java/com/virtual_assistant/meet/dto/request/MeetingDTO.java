@@ -6,11 +6,9 @@ public class MeetingDTO {
     private String name;
     private String rememberCode;
     private LocalDateTime startTime;
-    private LocalDateTime expectedEndTime;
-    private String department; // ID phòng ban
-    private String room;       // ID phòng họp
+    private String department;
+    private String room;
 
-    // Getters và Setters
 
     public String getName() {
         return name;
@@ -36,13 +34,6 @@ public class MeetingDTO {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getExpectedEndTime() {
-        return expectedEndTime;
-    }
-
-    public void setExpectedEndTime(LocalDateTime expectedEndTime) {
-        this.expectedEndTime = expectedEndTime;
-    }
 
     public String getDepartment() {
         return department;

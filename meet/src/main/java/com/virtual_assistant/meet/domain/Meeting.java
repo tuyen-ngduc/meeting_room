@@ -18,7 +18,7 @@ public class Meeting {
     private String rememberCode;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private LocalDateTime expectedEndTime;
+
 
     @ManyToOne
     @JoinColumn(name = "department")
@@ -139,11 +139,5 @@ public class Meeting {
         this.documents = documents;
     }
 
-    public LocalDateTime getExpectedEndTime() {
-        return expectedEndTime;
-    }
 
-    public void setExpectedEndTime(LocalDateTime expectedEndTime) {
-        this.expectedEndTime = expectedEndTime;
-    }
 }

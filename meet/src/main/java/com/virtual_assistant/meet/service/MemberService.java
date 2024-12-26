@@ -39,9 +39,9 @@ public class MemberService {
             List<Member> existingMembers = memberRepository.findMembersByEmployeeAndMeetingTime(
                     employee.getIdEmployee(), meeting.getStartTime());
 
-            if (!existingMembers.isEmpty()) {
-                throw new RuntimeException("Nhân viên " + employee.getIdEmployee() + " đã tham gia một cuộc họp cùng giờ.");
-            }
+//            if (!existingMembers.isEmpty()) {
+//                throw new RuntimeException("Nhân viên " + employee.getIdEmployee() + " đã tham gia một cuộc họp cùng giờ.");
+//            }
 
             Role role = roleRepository.findByName(dto.getRoleName())
 

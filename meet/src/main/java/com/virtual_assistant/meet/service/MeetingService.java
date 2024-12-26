@@ -11,6 +11,7 @@ import com.virtual_assistant.meet.repository.EmployeeRepository;
 import com.virtual_assistant.meet.repository.MeetingRepository;
 import com.virtual_assistant.meet.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,6 @@ public class MeetingService {
         meetingDTO.setId(meeting.getId());
         meetingDTO.setName(meeting.getName());
         meetingDTO.setStartTime(meeting.getStartTime());
-        meetingDTO.setExpectedEndTime(meeting.getExpectedEndTime());
         meetingDTO.setDepartment(meeting.getDepartment().getName());
         meetingDTO.setRoom(meeting.getRoom().getName());
         meetingDTO.setStatus(meeting.getStatus().getDescription());
@@ -90,30 +90,18 @@ public class MeetingService {
 
 
         LocalDateTime startTime = request.getStartTime();
-        LocalDateTime expectedEndTime = request.getExpectedEndTime();
+        LocalDateTime nowTime = LocalDateTime.now();
         LocalDateTime endTime = null;
 
-        if (expectedEndTime.isBefore(startTime)) {
-            throw new RuntimeException("Thời gian kết thúc dự kiến không thể trước thời gian bắt đầu.");
-        }
-
-        if (!room.getName().equalsIgnoreCase("Online")) {
-            List<Meeting> conflictingMeetings = meetingRepository.findConflictingMeetings(room.getId(), startTime, expectedEndTime);
-            if (!conflictingMeetings.isEmpty()) {
-                throw new RuntimeException("Phòng họp " + room.getName() + " đã có cuộc họp khác trong khung giờ này.");
-            }
-
-        }
 
         Meeting meeting = new Meeting();
         meeting.setName(request.getName());
         meeting.setRememberCode(request.getRememberCode());
         meeting.setStartTime(startTime);
-        meeting.setExpectedEndTime(expectedEndTime);
         meeting.setEndTime(endTime);
         meeting.setRoom(room);
         meeting.setDepartment(department);
-        meeting.setStatus(getMeetingStatus(startTime, endTime));
+        meeting.setStatus(Status.NOT_STARTED);
 
 
         try {
@@ -127,40 +115,37 @@ public class MeetingService {
 
     }
 
-    public Status getMeetingStatus(LocalDateTime startTime, LocalDateTime endTime) {
-        LocalDateTime nowTime = LocalDateTime.now();
-
-        if (startTime == null) {
-            return Status.NOT_STARTED;
+    public Status getMeetingStatus(long idMeeting, LocalDateTime startTime, LocalDateTime nowTime) {
+        Meeting meetingOptional = meetingRepository.findById(idMeeting).orElseThrow(() -> new RuntimeException("Meeting not found"));
+        if (nowTime.plusHours(1).isAfter(startTime) && nowTime.minusHours(1).isBefore(startTime)){
+            return Status.UPCOMING;
+        }else if ((meetingOptional.getStatus().equals(Status.UPCOMING) || meetingOptional.getStatus().equals(Status.NOT_STARTED)) && nowTime.minusHours(1).isAfter(startTime)){
+            return Status.CANCELED;
         }
+        return Status.NOT_STARTED;
+    }
 
-        if (nowTime.isBefore(startTime)) {
-            long hoursDifference = Duration.between(nowTime, startTime).toHours();
-            if (hoursDifference >= 36) {
-                return Status.NOT_STARTED;
-            } else {
-                return Status.UPCOMING;
-            }
-        } else {
-            if (endTime != null) {
-                if (nowTime.isAfter(endTime)) {
-                    return Status.COMPLETED;
-                } else {
-                    return Status.ONGOING;
-                }
-            } else {
-                // endTime == null
-                return Status.ONGOING;
+
+    @Scheduled(fixedRate = 60000)
+    public void updateMeetingStatuses() {
+        LocalDateTime nowTime = LocalDateTime.now();
+        List<Meeting> meetings = meetingRepository.findAll();
+        System.out.println("Chạy");
+        for (Meeting meeting : meetings) {
+            Status newStatus = getMeetingStatus(meeting.getId(), meeting.getStartTime(), nowTime);
+            if (!meeting.getStatus().equals(newStatus)) {
+                meeting.setStatus(newStatus);
+                meetingRepository.save(meeting);
             }
         }
     }
+
 
     public void updateMeetingStatus(long meetingId, Status newStatus) {
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new RuntimeException("Meeting not found"));
         meeting.setStatus(newStatus);
         meetingRepository.save(meeting);
     }
-
 
 
     private String saveMeetingTranscript(Meeting meeting) throws IOException {
@@ -203,7 +188,6 @@ public class MeetingService {
             dto.setId(meeting.getId());
             dto.setName(meeting.getName());
             dto.setStartTime(meeting.getStartTime());
-            dto.setExpectedEndTime(meeting.getExpectedEndTime());
             dto.setDepartment(meeting.getDepartment().getName());
             dto.setRoom(meeting.getRoom().getName());
             dto.setStatus(meeting.getStatus().getDescription());
@@ -231,16 +215,15 @@ public class MeetingService {
                 .orElseThrow(() -> new RuntimeException("Meeting not found with id " + idMeeting));
 
 
-            meeting.setName(meetingDTO.getName());
-            meeting.setRememberCode(meetingDTO.getRememberCode());
-            meeting.setStartTime(meetingDTO.getStartTime());
-            meeting.setExpectedEndTime(meetingDTO.getExpectedEndTime());
-            Department department = departmentRepository.findByName(meetingDTO.getDepartment())
-                    .orElseThrow(() -> new RuntimeException("Department not found with id " + meetingDTO.getDepartment()));
-            meeting.setDepartment(department);
-            Room room = roomRepository.findByName(meetingDTO.getRoom())
-                    .orElseThrow(() -> new RuntimeException("Room not found with id " + meetingDTO.getRoom()));
-            meeting.setRoom(room);
+        meeting.setName(meetingDTO.getName());
+        meeting.setRememberCode(meetingDTO.getRememberCode());
+        meeting.setStartTime(meetingDTO.getStartTime());
+        Department department = departmentRepository.findByName(meetingDTO.getDepartment())
+                .orElseThrow(() -> new RuntimeException("Department not found with id " + meetingDTO.getDepartment()));
+        meeting.setDepartment(department);
+        Room room = roomRepository.findByName(meetingDTO.getRoom())
+                .orElseThrow(() -> new RuntimeException("Room not found with id " + meetingDTO.getRoom()));
+        meeting.setRoom(room);
         meetingRepository.save(meeting);
     }
 
@@ -257,7 +240,6 @@ public class MeetingService {
 
         meetingRepository.save(meeting);
     }
-
 
 
 }
