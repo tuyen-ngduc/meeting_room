@@ -174,6 +174,10 @@ public class EmployeeService {
             employee.setPhoneNumber(request.getPhoneNumber());
             employee.setAddress(request.getAddress());
             employee.setEmail(request.getEmail());
+            employee.setWorkplace(request.getWorkplace());
+            employee.setBank(request.getBank());
+            employee.setBankAccount(request.getBankAccount());
+            employee.setIdentification(request.getIdentification());
         employeeRepository.save(employee);
     }
 }
