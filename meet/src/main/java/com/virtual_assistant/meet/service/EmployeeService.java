@@ -71,6 +71,13 @@ public class EmployeeService {
         String rawPassword = employeeDTO.getDob().format(formatter);
         String encodedPassword = passwordEncoder.encode(rawPassword);
         employee.setPassword(encodedPassword);
+        employee.setBankAccount(employeeDTO.getBankAccount());
+        employee.setBank(employeeDTO.getBank());
+        employee.setAddress(employeeDTO.getAddress());
+        employee.setIdentification((employeeDTO.getIdentification()));
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setPhoneNumber(employeeDTO.getPhoneNumber());
+        employee.setWorkplace(employeeDTO.getWorkplace());
         employeeRepository.save(employee);
     }
 
