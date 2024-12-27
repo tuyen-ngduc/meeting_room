@@ -46,4 +46,35 @@ public class RoleService {
         return memberRepository.save(member);
     }
 
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    // Lấy Role theo ID
+    public Optional<Role> getRoleById(Long id) {
+        return roleRepository.findById(id);
+    }
+
+    // Thêm Role mới
+    public Role createRole(Role role) {
+        return roleRepository.save(role);
+    }
+
+    // Cập nhật Role
+    public Role updateRole(Long id, Role updatedRole) {
+        return roleRepository.findById(id).map(role -> {
+            role.setName(updatedRole.getName());
+            role.setDescription(updatedRole.getDescription());
+            return roleRepository.save(role);
+        }).orElseThrow(() -> new RuntimeException("Role không tồn tại với id: " + id));
+    }
+
+    // Xóa Role
+    public void deleteRole(Long id) {
+        if (!roleRepository.existsById(id)) {
+            throw new RuntimeException("Role không tồn tại với id: " + id);
+        }
+        roleRepository.deleteById(id);
+    }
+
 }
