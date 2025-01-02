@@ -39,9 +39,18 @@ public class MemberService {
             List<Member> existingMembers = memberRepository.findMembersByEmployeeAndMeetingTime(
                     employee.getIdEmployee(), meeting.getStartTime());
 
+            // Kiểm tra xem nhân viên này đã được thêm vào cuộc họp hay chưa
+            boolean isAlreadyMember = memberRepository.existsByMeetingIdAndEmployeeId(idMeeting, employee.getIdEmployee());
+
+            if (isAlreadyMember) {
+                throw new RuntimeException("Nhân viên có mã " + dto.getIdMember() + " đã tham gia cuộc họp này");
+            }
+
+
 //            if (!existingMembers.isEmpty()) {
 //                throw new RuntimeException("Nhân viên " + employee.getIdEmployee() + " đã tham gia một cuộc họp cùng giờ.");
 //            }
+
 
             Role role = roleRepository.findByName(dto.getRoleName())
 

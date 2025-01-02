@@ -85,7 +85,7 @@ public class EmployeeService {
     public Employee createEmployee(EmployeeDTO employeeDTO) {
         // Kiểm tra xem nhân viên đã tồn tại chưa (dựa vào id nhân viên kiểu String)
         if (employeeRepository.existsById(employeeDTO.getIdEmployee())) {
-            throw new RuntimeException("Employee with ID " + employeeDTO.getIdEmployee() + " already exists.");
+            throw new RuntimeException("Nhân viên có id " + employeeDTO.getIdEmployee() + " đã tồn tại");
         }
 
         Employee newEmployee = new Employee();
@@ -111,7 +111,7 @@ public class EmployeeService {
     public Employee updateEmployee(EmployeeDTO employeeDTO) {
         // Kiểm tra xem nhân viên đã tồn tại chưa (dựa vào id nhân viên kiểu String)
         if (!employeeRepository.existsById(employeeDTO.getIdEmployee())) {
-            throw new RuntimeException("Employee with ID " + employeeDTO.getIdEmployee() + " not already exists.");
+            throw new RuntimeException("Nhân viên có id " + employeeDTO.getIdEmployee() + " không tồn tại");
         }
 
         Employee newEmployee = new Employee();

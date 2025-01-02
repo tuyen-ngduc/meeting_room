@@ -46,7 +46,7 @@ public class AccountController {
     public ResponseEntity<String> createAccount(@RequestBody EmployeeDTO employeeDTO) {
         try {
             employeeService.createEmployeeAccount(employeeDTO);
-            return ResponseEntity.ok("Employee account created successfully!");
+            return ResponseEntity.ok("Thêm nhân viên thành công");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
@@ -59,6 +59,16 @@ public class AccountController {
         try {
             accountService.changePassword(request.getUsername(), request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.ok("Đổi mật khẩu thành công!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password/{idEmployee}")
+    public ResponseEntity<String> resetPassword(@PathVariable String idEmployee) {
+        try {
+            accountService.resetPassword(idEmployee);
+            return ResponseEntity.ok("Mật khẩu của nhân viên đã được đặt lại về mặc định (ngày sinh)");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

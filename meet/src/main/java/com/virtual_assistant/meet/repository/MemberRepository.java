@@ -25,5 +25,11 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     List<Member> findMembersByEmployeeAndMeetingTime(@Param("employeeId") String employeeId,
                                                      @Param("startTime") LocalDateTime startTime);
 
+    @Query("SELECT COUNT(m) > 0 " +
+            "FROM Member m JOIN m.meetings meeting " +
+            "WHERE meeting.id = :meetingId AND m.employee.idEmployee = :employeeId")
+    boolean existsByMeetingIdAndEmployeeId(@Param("meetingId") Long meetingId, @Param("employeeId") String employeeId);
+
+
 
 }

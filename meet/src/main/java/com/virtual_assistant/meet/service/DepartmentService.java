@@ -25,7 +25,7 @@ public class DepartmentService {
     public Department createDepartment(String id, String name, String description) {
         // Kiểm tra nếu phòng ban với mã ID đã tồn tại hay chưa
         if (departmentRepository.existsById(id)) {
-            throw new RuntimeException("Department with id " + id + " already exists");
+            throw new RuntimeException("Phòng ban có id " + id + " đã tồn tại");
         }
 
         Department department = new Department(id, name, description);
@@ -35,7 +35,7 @@ public class DepartmentService {
     // Cập nhật phòng ban
     public Department updateDepartment(String id, String name, String description) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy phòng ban có id " + id));
 
         department.setName(name);
         department.setDescription(description);
