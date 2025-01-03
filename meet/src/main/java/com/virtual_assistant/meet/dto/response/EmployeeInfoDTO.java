@@ -15,6 +15,10 @@ public class EmployeeInfoDTO {
 
     private String position;
     private String department;
+    private String workplace;
+    private String bank;
+    private String bankAccount;
+
     private String email;
 
     public String getId() {
@@ -88,6 +92,30 @@ public class EmployeeInfoDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getWorkplace() {
+        return workplace;
+    }
+
+    public void setWorkplace(String workplace) {
+        this.workplace = workplace;
+    }
+
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    public String getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(String bankAccount) {
+        this.bankAccount = bankAccount;
     }
 }
 

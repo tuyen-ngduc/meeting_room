@@ -163,6 +163,9 @@ public class EmployeeService {
         info.setDepartment(employee.getDepartment().getName());
         info.setPosition(employee.getPosition().getName());
         info.setEmail(employee.getEmail());
+        info.setBank(employee.getBank());
+        info.setBankAccount(employee.getBankAccount());
+        info.setWorkplace(employee.getWorkplace());
 
         return Optional.of(info);
     }
