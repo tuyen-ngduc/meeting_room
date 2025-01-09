@@ -64,24 +64,47 @@ public class DocumentService {
     }
 
 
-    // Lưu file và cập nhật thông tin vào cơ sở dữ liệu
-    public void saveDocument(MultipartFile file, long meetingId) throws IOException {
+    public void saveDocuments(MultipartFile[] files, long meetingId) throws IOException {
+        // Lấy thông tin cuộc họp từ cơ sở dữ liệu
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        String uploadDir = "documents/";
-        Path path = Paths.get(uploadDir + file.getOriginalFilename());
 
-        // Lưu file vào thư mục
-        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        // Lấy thuộc tính rememberCode của cuộc họp
+        String rememberCode = meeting.getRememberCode();
+        if (rememberCode == null || rememberCode.isEmpty()) {
+            throw new RuntimeException("Meeting rememberCode is missing.");
+        }
 
-        // Tạo đối tượng Document và lưu vào cơ sở dữ liệu
-        Document document = new Document();
-        document.setName(file.getOriginalFilename());
-        document.setPath(path.toString());
-        document.setMeeting(meeting);
+        // Đường dẫn thư mục con (documents/{rememberCode})
+        String uploadDir = "documents/" + rememberCode + "/";
+        Path uploadPath = Paths.get(uploadDir);
 
-        documentRepository.save(document);
+        // Tạo thư mục nếu chưa tồn tại
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                // Đường dẫn file trong thư mục con
+                Path filePath = uploadPath.resolve(file.getOriginalFilename());
+
+                // Lưu file vào thư mục con
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // Tạo đối tượng Document và lưu vào cơ sở dữ liệu
+                Document document = new Document();
+                document.setName(file.getOriginalFilename());
+                document.setPath(filePath.toString());
+                document.setMeeting(meeting);
+
+                // Lưu thông tin file vào cơ sở dữ liệu
+                documentRepository.save(document);
+            }
+        }
     }
+
+
 
     public List<DocumentFileDTO> getAllDocuments() {
 

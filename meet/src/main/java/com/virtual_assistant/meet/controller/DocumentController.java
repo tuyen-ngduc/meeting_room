@@ -27,15 +27,27 @@ public class DocumentController {
     }
 
     @PostMapping("/upload/{meetingId}")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("meetingId") long meetingId) {
+    public ResponseEntity<String> uploadFiles(
+            @RequestParam("files") MultipartFile[] files,
+            @PathVariable("meetingId") long meetingId) {
         try {
-            // Lưu file và cập nhật thông tin vào cơ sở dữ liệu
-            documentService.saveDocument(file, meetingId);
-            return ResponseEntity.ok("File uploaded successfully.");
+            if (files == null || files.length == 0) {
+                return ResponseEntity.badRequest().body("No files were uploaded.");
+            }
+
+            // Gọi service để lưu tất cả các file
+            documentService.saveDocuments(files, meetingId);
+
+            return ResponseEntity.ok("Files uploaded successfully.");
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error uploading files: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
+
 
     @GetMapping
     public ResponseEntity<List<DocumentFileDTO>> getAllDocuments() {
