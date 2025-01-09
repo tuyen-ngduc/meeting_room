@@ -1,7 +1,6 @@
 package com.virtual_assistant.meet.dto.request;
 
 public class ChangePasswordDTO {
-    private String username;
     private String oldPassword;
     private String newPassword;
 
@@ -15,13 +14,6 @@ public class ChangePasswordDTO {
         this.oldPassword = oldPassword;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getNewPassword() {
         return newPassword;

@@ -57,7 +57,7 @@ public class AccountController {
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO request) {
         try {
-            accountService.changePassword(request.getUsername(), request.getOldPassword(), request.getNewPassword());
+            accountService.changePassword(request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.ok("Đổi mật khẩu thành công!");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

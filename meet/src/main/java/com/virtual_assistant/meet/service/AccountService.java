@@ -5,6 +5,8 @@ import com.virtual_assistant.meet.domain.Employee;
 import com.virtual_assistant.meet.dto.request.Login;
 import com.virtual_assistant.meet.repository.EmployeeRepository;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.stereotype.Service;
@@ -67,7 +69,9 @@ public class AccountService {
         employeeRepository.save(employee);
     }
 
-    public void changePassword(String username, String oldPassword, String newPassword) {
+    public void changePassword( String oldPassword, String newPassword) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         Employee employee = employeeRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Người dùng không tồn tại!"));
 
