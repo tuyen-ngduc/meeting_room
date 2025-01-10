@@ -109,29 +109,37 @@ public class EmployeeService {
 
     // Cập nhật nhân viên
     public Employee updateEmployee(EmployeeDTO employeeDTO) {
-        // Kiểm tra xem nhân viên đã tồn tại chưa (dựa vào id nhân viên kiểu String)
-        if (!employeeRepository.existsById(employeeDTO.getIdEmployee())) {
-            throw new RuntimeException("Nhân viên có id " + employeeDTO.getIdEmployee() + " không tồn tại");
-        }
+        // Kiểm tra xem nhân viên có tồn tại trong cơ sở dữ liệu không
+        Employee existingEmployee = employeeRepository.findByIdEmployee(employeeDTO.getIdEmployee())
+                .orElseThrow(() -> new RuntimeException("Nhân viên có id " + employeeDTO.getIdEmployee() + " không tồn tại"));
 
-        Employee newEmployee = new Employee();
-        newEmployee.setIdEmployee(employeeDTO.getIdEmployee());
-        newEmployee.setName(employeeDTO.getName());
-        newEmployee.setBank(employeeDTO.getBank());
-        newEmployee.setAddress(employeeDTO.getAddress());
-        newEmployee.setPosition(positionRepository.findByName(employeeDTO.getPosition()).orElseThrow(() -> new RuntimeException("Position not found")));
-        newEmployee.setDepartment(departmentRepository.findByName(employeeDTO.getDepartment()).orElseThrow(() -> new RuntimeException("Department not found")));
-        newEmployee.setDob(employeeDTO.getDob());
-        newEmployee.setDegree(employeeDTO.getDegree());
-        newEmployee.setIdentification(employeeDTO.getIdentification());
-        newEmployee.setWorkplace(employeeDTO.getWorkplace());
-        newEmployee.setPhoneNumber(employeeDTO.getPhoneNumber());
-        newEmployee.setBankAccount(employeeDTO.getBankAccount());
+        // Cập nhật các thông tin mới từ DTO vào thực thể đã tồn tại
+        existingEmployee.setName(employeeDTO.getName());
+        existingEmployee.setBank(employeeDTO.getBank());
+        existingEmployee.setAddress(employeeDTO.getAddress());
+        existingEmployee.setPosition(
+                positionRepository.findByName(employeeDTO.getPosition())
+                        .orElseThrow(() -> new RuntimeException("Position not found"))
+        );
+        existingEmployee.setDepartment(
+                departmentRepository.findByName(employeeDTO.getDepartment())
+                        .orElseThrow(() -> new RuntimeException("Department not found"))
+        );
+        existingEmployee.setDob(employeeDTO.getDob());
+        existingEmployee.setDegree(employeeDTO.getDegree());
+        existingEmployee.setIdentification(employeeDTO.getIdentification());
+        existingEmployee.setWorkplace(employeeDTO.getWorkplace());
+        existingEmployee.setPhoneNumber(employeeDTO.getPhoneNumber());
+        existingEmployee.setBankAccount(employeeDTO.getBankAccount());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String rawPassword = employeeDTO.getDob().format(formatter);
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        existingEmployee.setPassword(encodedPassword);
 
-
-        // Lưu nhân viên vào cơ sở dữ liệu
-        return employeeRepository.save(newEmployee);
+        // Lưu thay đổi vào cơ sở dữ liệu
+        return employeeRepository.save(existingEmployee);
     }
+
 
 
     // Xóa nhân viên

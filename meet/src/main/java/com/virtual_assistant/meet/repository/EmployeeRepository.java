@@ -14,7 +14,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
     Optional<Employee> findByIdEmployee(String idEmployee);
 
 
-    boolean existsById(String id);
+    boolean existsByIdEmployee(String id);
 
     @Query("select new com.virtual_assistant.meet.dto.response.EmployeeDTO(e.idEmployee, e.name, d.name) " + " from Employee e " + "JOIN e.department d")
     List<EmployeeDTO> findEmployee();
