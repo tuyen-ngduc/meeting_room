@@ -9,33 +9,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/audio")
-public class AudioController {
+@RequestMapping("/transcript")
+public class Audio2Controller {
     private static final String UPLOAD_DIR = "uploads/";
 
-    @PostMapping("/uploads")
-    public ResponseEntity<String> uploadAudio(@RequestParam("audio") MultipartFile audioFile) {
-        try {
-            // Lưu file vào thư mục tạm
-            Path path = Paths.get("uploads/" + audioFile.getOriginalFilename());
-            Files.createDirectories(path.getParent());
-            Files.write(path, audioFile.getBytes());
-
-            return ResponseEntity.ok("Audio uploaded successfully");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading audio");
-        }
-    }
-
-
-
-    @GetMapping("/transcript/{filename}")
+    @GetMapping("/{filename}")
     public ResponseEntity<String> processAudioFromUploads(@PathVariable("filename") String filename) {
         try {
             // Đường dẫn file trong thư mục "uploads"
