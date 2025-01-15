@@ -88,6 +88,10 @@ public class MeetingService {
         Room room = roomRepository.findByName(request.getRoom())
                 .orElseThrow(() -> new RuntimeException("Phòng họp không tồn tại: " + request.getRoom()));
 
+        boolean isRememberCodeExists = meetingRepository.existsByRememberCode(request.getRememberCode());
+        if(isRememberCodeExists) {
+            throw new RuntimeException("Mã gợi nhớ đã tồn tại");
+        }
 
         LocalDateTime startTime = request.getStartTime();
         LocalDateTime nowTime = LocalDateTime.now();

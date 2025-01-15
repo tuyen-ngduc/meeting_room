@@ -15,6 +15,7 @@ public class Meeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+
     private String rememberCode;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
