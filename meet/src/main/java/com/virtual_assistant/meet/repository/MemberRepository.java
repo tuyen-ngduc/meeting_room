@@ -1,6 +1,8 @@
 package com.virtual_assistant.meet.repository;
 
+import com.virtual_assistant.meet.domain.Meeting;
 import com.virtual_assistant.meet.domain.Member;
+import com.virtual_assistant.meet.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,6 +31,10 @@ public interface MemberRepository extends JpaRepository<Member, String> {
             "FROM Member m JOIN m.meetings meeting " +
             "WHERE meeting.id = :meetingId AND m.employee.idEmployee = :employeeId")
     boolean existsByMeetingIdAndEmployeeId(@Param("meetingId") Long meetingId, @Param("employeeId") String employeeId);
+
+    @Query("SELECT m.role.name FROM Member m JOIN m.meetings meet WHERE m.employee.idEmployee = :employeeId AND meet.id = :meetingId")
+    String findRoleNameByEmployeeAndMeeting(@Param("employeeId") String employeeId, @Param("meetingId") Long meetingId);
+
 
 
 

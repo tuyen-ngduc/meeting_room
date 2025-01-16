@@ -1,8 +1,10 @@
 package com.virtual_assistant.meet.controller;
 
+import com.virtual_assistant.meet.domain.Role;
 import com.virtual_assistant.meet.service.MeetingService;
 import com.virtual_assistant.meet.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,19 @@ public class MemberController {
         this.memberService = memberService;
         this.messagingTemplate = messagingTemplate;
     }
+
+    @GetMapping("/{employeeId}/{meetingId}")
+    public ResponseEntity<String> getRoleByMemberAndMeeting(
+            @PathVariable String employeeId,
+            @PathVariable Long meetingId) {
+        try {
+            String roleName = memberService.getRoleNameByMemberAndMeeting(employeeId, meetingId);
+            return ResponseEntity.ok(roleName);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
     @DeleteMapping("/{idMeeting}/{idMember}")
     public ResponseEntity<String> deleteMember(@PathVariable long idMeeting, @PathVariable String idMember){

@@ -24,13 +24,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "WHERE mt.id = :idMeeting")
     List<MemberDTO> findMembersByMeetingId(@Param("idMeeting") Long idMeeting);
 
-//    @Query("SELECT m FROM Meeting m WHERE m.room.id = :roomId " +
-//            "AND ((:startTime BETWEEN m.startTime AND m.expectedEndTime) " +
-//            "OR (:expectedEndTime BETWEEN m.startTime AND m.expectedEndTime) " +
-//            "OR (m.startTime BETWEEN :startTime AND :expectedEndTime))")
-//    List<Meeting> findConflictingMeetings(@Param("roomId") Long roomId,
-//                                          @Param("startTime") LocalDateTime startTime,
-//                                          @Param("expectedEndTime") LocalDateTime expectedEndTime);
 
 
     @Query("SELECT m FROM Meeting m JOIN m.members mem WHERE mem.employee = :employee")
