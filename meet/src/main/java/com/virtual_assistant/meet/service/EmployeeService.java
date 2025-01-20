@@ -144,7 +144,7 @@ public class EmployeeService {
 
     // Xóa nhân viên
     public void deleteEmployee(String id) {
-        Employee employee = employeeRepository.findById(id)
+        Employee employee = employeeRepository.findByIdEmployee(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
         employeeRepository.delete(employee);
     }
